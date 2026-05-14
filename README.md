@@ -49,7 +49,7 @@ This project was developed as a **Theory of Computation (TOC)** mini project and
 # 📂 Project Structure
 
 ```bash
-202401040191_Topic_25/
+TOC_Regex_Mini_Project/
 │
 ├── index.html              # Main project file (HTML + CSS + JS)
 ├── validation.js           # Validation logic using Regex
