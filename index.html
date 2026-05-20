@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Secure File Upload — TOC Project | Tushar Kaldate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN SYSTEM — Variables & Reset
+═══════════════════════════════════════════════════ */
+:root {
+  --bg:         #09090f;
+  --bg2:        #0f0f1a;
+  --bg3:        #14142b;
+  --surface:    #1a1a2e;
+  --surface2:   #1e1e35;
+  --border:     #2a2a50;
+  --border2:    #3a3a70;
+  --gold:       #d4a843;
+  --gold2:      #f0c060;
+  --cyan:       #00e5ff;
+  --cyan2:      #4dfff3;
+  --red:        #ff4757;
+  --green:      #2ed573;
+  --purple:     #7c4dff;
+  --text:       #e8e8f0;
+  --text2:      #a0a0c0;
+  --text3:      #6060a0;
+  --mono:       'JetBrains Mono', monospace;
+  --serif:      'Playfair Display', serif;
+  --body:       'Crimson Pro', serif;
+  --glow-cyan:  0 0 20px rgba(0,229,255,0.3);
+  --glow-gold:  0 0 20px rgba(212,168,67,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════ */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(9,9,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.nav-brand {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+}
+.nav-brand span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+.nav-links a:hover {
+  color: var(--cyan);
+  border-color: var(--border2);
+  background: rgba(0,229,255,0.06);
+}
+
+/* ═══════════════════════════════════════════════════
+   COVER PAGE
+═══════════════════════════════════════════════════ */
+#cover {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 80px 28px;
+}
+
+.cover-glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cover-glow2 {
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,168,67,0.07) 0%, transparent 70%);
+  top: 30%; left: 30%;
+  pointer-events: none;
+}
+
+.cover-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  border: 1px solid rgba(0,229,255,0.3);
+  background: rgba(0,229,255,0.05);
+  padding: 6px 16px;
+  border-radius: 20px;
+  letter-spacing: 0.1em;
+  margin-bottom: 32px;
+  animation: fadeSlideDown 0.6s ease both;
+}
+.cover-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+}
+
+.cover-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 6vw, 68px);
+  font-weight: 900;
+  line-height: 1.08;
+  margin-bottom: 20px;
+  animation: fadeSlideDown 0.7s 0.1s ease both;
+}
+.cover-title .line1 { display: block; color: var(--text); }
+.cover-title .line2 {
+  display: block;
+  background: linear-gradient(120deg, var(--gold) 0%, var(--gold2) 40%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cover-subtitle {
+  font-size: 18px;
+  color: var(--text2);
+  max-width: 560px;
+  margin: 0 auto 44px;
+  font-style: italic;
+  animation: fadeSlideDown 0.7s 0.2s ease both;
+}
+
+.cover-meta {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  animation: fadeSlideDown 0.7s 0.3s ease both;
+  margin-bottom: 44px;
+}
+.meta-item {
+  padding: 16px 28px;
+  text-align: left;
+  border-right: 1px solid var(--border);
+}
+.meta-item:last-child { border-right: none; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.meta-value {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--gold2);
+  font-weight: 600;
+}
+
+.cover-tags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeSlideDown 0.7s 0.4s ease both;
+}
+.tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  letter-spacing: 0.05em;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  animation: fadeIn 1s 1s ease both;
+}
+.scroll-arrow {
+  width: 20px; height: 30px;
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  position: relative;
+}
+.scroll-arrow::after {
+  content: '';
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--cyan);
+  border-radius: 50%;
+  left: 50%; top: 6px;
+  transform: translateX(-50%);
+  animation: scrollDot 1.5s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION LAYOUT
+═══════════════════════════════════════════════════ */
+section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 52px;
+}
+.section-number {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+.section-title-group { flex: 1; }
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.section-desc {
+  color: var(--text2);
+  font-size: 15px;
+  max-width: 600px;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════
+   §1 — LIVE DEMO FORM
+═══════════════════════════════════════════════════ */
+.form-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.form-header {
+  padding: 20px 28px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot.r { background: #ff5f57; }
+.dot.y { background: #ffbd2e; }
+.dot.g { background: #28ca41; }
+.form-title-bar {
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.form-body { padding: 36px 36px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field-group.full { grid-column: 1 / -1; }
+
+label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.req { color: var(--red); font-size: 13px; }
+.field-hint {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text3);
+  display: block;
+  margin-top: -2px;
+  margin-bottom: 2px;
+  font-style: normal;
+}
+
+input, textarea, select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 11px 14px;
+  width: 100%;
+  outline: none;
+  transition: all 0.25s ease;
+}
+input::placeholder, textarea::placeholder { color: var(--text3); }
+input:focus, textarea:focus, select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.1);
+  background: var(--bg2);
+}
+input.valid {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(46,213,115,0.12);
+}
+input.invalid, textarea.invalid, select.invalid {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px rgba(255,71,87,0.12);
+}
+input.valid { border-color: var(--green); box-shadow: 0 0 0 2px rgba(46,213,115,0.12); }
+textarea { resize: vertical; min-height: 90px; }
+select option { background: var(--bg3); }
+
+.field-feedback {
+  font-family: var(--mono);
+  font-size: 11px;
+  min-height: 18px;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.field-feedback.ok  { color: var(--green); }
+.field-feedback.err { color: var(--red); }
+
+/* File upload area */
+.file-drop {
+  border: 2px dashed var(--border2);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: var(--bg3);
+  position: relative;
+}
+.file-drop:hover, .file-drop.drag { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
+.file-drop input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  padding: 0; margin: 0; border: none;
+}
+.file-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+.file-drop-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  display: block;
+}
+.file-drop-label span { color: var(--cyan); text-decoration: underline; }
+
+/* Submit */
+.form-footer {
+  padding: 24px 36px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.validation-summary {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+}
+.validation-summary span { color: var(--gold); font-weight: 600; }
+
+.btn-submit {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, var(--gold) 0%, #c8902a 100%);
+  color: #09090f;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s;
+}
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.btn-submit:hover::before { opacity: 1; }
+.btn-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(212,168,67,0.4); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit span { position: relative; z-index: 1; }
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 14px 22px;
+  border-radius: 8px;
+  border-left: 3px solid;
+  backdrop-filter: blur(12px);
+  transform: translateX(120%);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 320px;
+}
+#toast.show { transform: translateX(0); }
+#toast.success { background: rgba(46,213,115,0.15); border-color: var(--green); color: var(--green); }
+#toast.error   { background: rgba(255,71,87,0.15); border-color: var(--red); color: var(--red); }
+
+/* ═══════════════════════════════════════════════════
+   §2 — REGEX DESIGN
+═══════════════════════════════════════════════════ */
+.regex-cards {
+  display: grid;
+  gap: 20px;
+}
+
+.regex-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.regex-card:hover { border-color: var(--border2); }
+
+.rc-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.rc-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--bg);
+  background: var(--gold);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.rc-name {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 600;
+  flex: 1;
+}
+.rc-chevron {
+  font-size: 12px;
+  color: var(--text3);
+  transition: transform 0.25s;
+}
+.regex-card.open .rc-chevron { transform: rotate(180deg); }
+
+.rc-body {
+  display: none;
+  padding: 22px;
+  gap: 16px;
+  flex-direction: column;
+}
+.regex-card.open .rc-body { display: flex; }
+
+.rc-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.regex-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--cyan2);
+  overflow-x: auto;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.regex-annotated {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.annot-line {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  align-items: flex-start;
+}
+.annot-line:last-child { margin-bottom: 0; }
+.annot-part {
+  font-family: var(--mono);
+  color: var(--cyan);
+  min-width: 180px;
+  flex-shrink: 0;
+}
+.annot-desc { color: var(--text2); }
+
+.formal-lang {
+  background: linear-gradient(135deg, rgba(212,168,67,0.05), rgba(0,229,255,0.05));
+  border: 1px solid rgba(212,168,67,0.25);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gold2);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════
+   §3 — DFA / NFA DIAGRAMS
+═══════════════════════════════════════════════════ */
+.dfa-section {
+  margin-bottom: 48px;
+}
+.dfa-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--gold2);
+  margin-bottom: 8px;
+}
+.dfa-desc {
+  color: var(--text2);
+  font-size: 15px;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+.dfa-diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  overflow-x: auto;
+}
+.dfa-diagram svg { max-width: 100%; height: auto; }
+
+.transition-table {
+  margin-top: 24px;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.transition-table th, .transition-table td {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.transition-table th {
+  background: var(--surface2);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.transition-table td { color: var(--text2); background: var(--bg3); }
+.transition-table tr:hover td { background: var(--surface); }
+.state-start { color: var(--cyan) !important; }
+.state-accept { color: var(--green) !important; }
+
+/* ═══════════════════════════════════════════════════
+   §4 — TEST CASES
+═══════════════════════════════════════════════════ */
+.test-section { margin-bottom: 44px; }
+.test-section-title {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--cyan);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.test-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.test-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.test-table th {
+  background: var(--surface2);
+  color: var(--text2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 10px 16px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.test-table td {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  vertical-align: top;
+}
+.test-table tr:hover td { background: var(--surface); }
+.badge-valid {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--green);
+  font-weight: 600;
+}
+.badge-invalid {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--red);
+  font-weight: 600;
+}
+.badge-valid::before  { content: '✓'; }
+.badge-invalid::before { content: '✗'; }
+.test-input { color: var(--cyan2); }
+.test-reason { color: var(--text2); font-size: 11px; }
+
+/* ═══════════════════════════════════════════════════
+   §5 — CODE EXPLANATION
+═══════════════════════════════════════════════════ */
+.code-block-wrapper {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.code-lang {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+.code-copy {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 0.2s;
+}
+.code-copy:hover { color: var(--cyan); }
+pre {
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text);
+  tab-size: 2;
+}
+.kw   { color: #c792ea; }
+.fn   { color: #82aaff; }
+.str  { color: #c3e88d; }
+.cmt  { color: #546e7a; font-style: italic; }
+.num  { color: var(--gold); }
+.rx   { color: var(--cyan2); }
+
+/* ═══════════════════════════════════════════════════
+   §6 — THEORY
+═══════════════════════════════════════════════════ */
+.theory-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.theory-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+}
+.theory-card-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--gold2);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.theory-card-title .icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: rgba(212,168,67,0.15);
+  border: 1px solid rgba(212,168,67,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.theory-body {
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.theory-body strong { color: var(--text); }
+.theory-body .highlight {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+  background: rgba(0,229,255,0.07);
+  border: 1px solid rgba(0,229,255,0.15);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.theorem-box {
+  background: linear-gradient(135deg, rgba(212,168,67,0.07) 0%, rgba(0,229,255,0.05) 100%);
+  border: 1px solid rgba(212,168,67,0.3);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-top: 28px;
+}
+.theorem-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.theorem-body {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.8;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════ */
+footer {
+  padding: 40px 28px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.footer-inner {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 2;
+}
+.footer-inner span { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════ */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes scrollDot {
+  0%   { top: 6px; opacity: 1; }
+  100% { top: 18px; opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .form-grid    { grid-template-columns: 1fr; }
+  .theory-grid  { grid-template-columns: 1fr; }
+  .cover-meta   { grid-template-columns: 1fr; }
+  .meta-item    { border-right: none; border-bottom: 1px solid var(--border); }
+  .meta-item:last-child { border-bottom: none; }
+  .form-body    { padding: 22px; }
+  .form-footer  { flex-direction: column; align-items: stretch; }
+  .nav-links    { display: none; }
+}
+
+/* Live tester */
+.live-tester {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+}
+.live-tester h4 {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  letter-spacing: 0.05em;
+}
+.tester-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.tester-select, .tester-input {
+  flex: 1;
+  min-width: 120px;
+}
+.tester-result {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  min-width: 120px;
+  text-align: center;
+}
+.tester-result.match { background: rgba(46,213,115,0.12); color: var(--green); border: 1px solid rgba(46,213,115,0.3); }
+.tester-result.nomatch { background: rgba(255,71,87,0.12); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+.tester-result.idle { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">TOC / <span>SFU-PROJ</span></div>
+    <ul class="nav-links">
+      <li><a href="#cover">Cover</a></li>
+      <li><a href="#demo">§1 Live Demo</a></li>
+      <li><a href="#regex-design">§2 Regex Design</a></li>
+      <li><a href="#dfa">§3 DFA / NFA</a></li>
+      <li><a href="#tests">§4 Test Cases</a></li>
+      <li><a href="#code">§5 Code</a></li>
+      <li><a href="#theory">§6 Theory</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── COVER PAGE ─────────────────────────────────── -->
+<div id="cover">
+  <div class="cover-glow"></div>
+  <div class="cover-glow2"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="cover-badge">Theory of Computation — Mini Project</div>
+    <h1 class="cover-title">
+      <span class="line1">Secure File Upload</span>
+      <span class="line2">Validation System</span>
+    </h1>
+    <p class="cover-subtitle">
+      A formal-language–grounded web form demonstrating regex-based input validation
+      with DFA/NFA state machines, lookahead constructs, and real-time feedback.
+    </p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Name</span>
+        <span class="meta-value">Tushar Kaldate</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">PRN</span>
+        <span class="meta-value">202401040191</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Roll No.</span>
+        <span class="meta-value">285</span>
+      </div>
+    </div>
+    <div class="cover-tags">
+      <span class="tag">HTML5</span>
+      <span class="tag">CSS3</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">Regular Expressions</span>
+      <span class="tag">DFA / NFA</span>
+      <span class="tag">Formal Languages</span>
+      <span class="tag">Lookaheads</span>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-arrow"></div>
+    SCROLL
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     §1 — LIVE DEMO
+═══════════════════════════════════════════════════ -->
+<section id="demo">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 1</span>
+      <div class="section-title-group">
+        <h2 class="section-title">Live Demo — Interactive Form</h2>
+        <p class="section-desc">All fields are validated in real-time using the regular expressions described in §2. Green = valid, Red = invalid.</p>
+      </div>
+    </div>
+
+    <div class="form-wrapper">
+      <div class="form-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="form-title-bar">secure-file-upload.html — Regex Validator v1.0</span>
+      </div>
+
+      <form id="mainForm" novalidate onsubmit="return handleSubmit(event)">
+        <div class="form-body">
+          <div class="form-grid">
+
+            <!-- USERNAME -->
+            <div class="field-group">
+              <label for="username">Username <span class="req">*</span></label>
+              <small class="field-hint">3–20 chars · letters, digits, underscore</small>
+              <input type="text" id="username" name="username" placeholder="e.g. tushar_285"
+                     oninput="validateUsername(this)" autocomplete="off"/>
+              <div class="field-feedback" id="fb-username"></div>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="field-group">
+              <label for="email">Email Address <span class="req">*</span></label>
+              <small class="field-hint">Standard RFC-like email format</small>
+              <input type="text" id="email" name="email" placeholder="e.g. tushar@college.edu"
+                     oninput="validateEmail(this)" autocomplete="off"/>
+              <div class="field-feedback" id="fb-email"></div>
+            </div>
+
+            <!-- FILE NAME -->
+            <div class="field-group">
+              <label for="filename">File Name <span class="req">*</span></label>
+              <small class="field-hint">Alphanumeric, dash, underscore + allowed extension</small>
+              <input type="text" id="filename" name="filename" placeholder="e.g. report_2024.pdf"
+                     oninput="validateFileName(this)" autocomplete="off"/>
+              <div class="field-feedback" id="fb-filename"></div>
+            </div>
+
+            <!-- FILE TYPE -->
+            <div class="field-group">
+              <label for="filetype">File Extension <span class="req">*</span></label>
+              <small class="field-hint">Only .jpg .png .pdf .docx .txt allowed</small>
+              <input type="text" id="filetype" name="filetype" placeholder="e.g. .pdf"
+                     oninput="validateFileType(this)" autocomplete="off"/>
+              <div class="field-feedback" id="fb-filetype"></div>
+            </div>
+
+            <!-- FILE SIZE -->
+            <div class="field-group">
+              <label for="filesize">File Size (MB) <span class="req">*</span></label>
+              <small class="field-hint">Positive number, up to 2 decimals, max 100 MB</small>
+              <input type="text" id="filesize" name="filesize" placeholder="e.g. 4.75"
+                     oninput="validateFileSize(this)" autocomplete="off"/>
+              <div class="field-feedback" id="fb-filesize"></div>
+            </div>
+
+            <!-- FILE UPLOAD -->
+            <div class="field-group">
+              <label for="fileupload">Upload File</label>
+              <div class="file-drop" id="fileDrop">
+                <input type="file" id="fileupload" name="fileupload"
+                       accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
+                       onchange="handleFileUpload(this)"/>
+                <span class="file-icon">📁</span>
+                <span class="file-drop-label">Drop file or <span>browse</span></span>
+              </div>
+              <div class="field-feedback" id="fb-fileupload"></div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="field-group full">
+              <label for="description">Description <span class="req">*</span></label>
+              <small class="field-hint">10–300 characters · letters, digits, basic punctuation</small>
+              <textarea id="description" name="description" rows="3"
+                        placeholder="Briefly describe the file contents and purpose..."
+                        oninput="validateDescription(this)"></textarea>
+              <div class="field-feedback" id="fb-description"></div>
+            </div>
+
+          </div><!-- /form-grid -->
+        </div><!-- /form-body -->
+
+        <div class="form-footer">
+          <div class="validation-summary" id="valSummary">
+            <span id="validCount">0</span> / 6 fields valid
+          </div>
+          <button type="submit" class="btn-submit">
+            <span>▶ Submit & Validate</span>
+          </button>
+        </div>
+      </form>
+    </div><!-- /form-wrapper -->
+
+    <!-- Live Regex Tester -->
+    <div class="live-tester">
+      <h4>⚡ Inline Regex Tester — pick a pattern and test any string live</h4>
+      <div class="tester-row">
+        <select class="tester-select" id="testerPattern" onchange="runTester()" style="max-width:240px;">
+          <option value="">— Select a Pattern —</option>
+          <option value="username">Username</option>
+          <option value="email">Email</option>
+          <option value="filename">File Name</option>
+          <option value="filetype">File Extension</option>
+          <option value="filesize">File Size</option>
+          <option value="description">Description</option>
+        </select>
+        <input class="tester-input" type="text" id="testerInput"
+               placeholder="Type test string here..." oninput="runTester()"/>
+        <div class="tester-result idle" id="testerResult">—</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     §2 — REGEX DESIGN
+═══════════════════════════════════════════════════ -->
+<section id="regex-design">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 2</span>
+      <div class="section-title-group">
+        <h2 class="section-title">Regex Design</h2>
+        <p class="section-desc">Each field's regular expression, annotated component-by-component, with the formal language definition and alphabet.</p>
+      </div>
+    </div>
+
+    <div class="regex-cards">
+
+      <!-- FIELD 1: USERNAME -->
+      <div class="regex-card open">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">1</div>
+          <div class="rc-name">Username</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex</div>
+            <div class="regex-block">^(?![0-9]+$)[a-zA-Z0-9_]{3,20}$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">Anchor — match must start at beginning of string</span></div>
+              <div class="annot-line"><span class="annot-part">(?![0-9]+$)</span><span class="annot-desc"><strong>Negative lookahead</strong> — rejects strings composed entirely of digits</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9_]</span><span class="annot-desc">Character class — uppercase, lowercase, digit, or underscore</span></div>
+              <div class="annot-line"><span class="annot-part">{3,20}</span><span class="annot-desc">Quantifier — minimum 3, maximum 20 characters</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">Anchor — match must end at end of string</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {a–z, A–Z, 0–9, _}<br>
+              L₁ = { w ∈ Σ* | 3 ≤ |w| ≤ 20, w ∈ [a-zA-Z0-9_]*, w ∉ [0-9]* }<br>
+              Justification: Finite bounds on length and a fixed alphabet → regular language.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD 2: EMAIL -->
+      <div class="regex-card">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">2</div>
+          <div class="rc-name">Email Address</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex</div>
+            <div class="regex-block">^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">String start anchor</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9._%+\-]+</span><span class="annot-desc">Local part — one or more valid email characters (letters, digits, dots, special chars)</span></div>
+              <div class="annot-line"><span class="annot-part">@</span><span class="annot-desc">Literal "@" separator — mandatory</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9.\-]+</span><span class="annot-desc">Domain label — letters, digits, hyphens, dots</span></div>
+              <div class="annot-line"><span class="annot-part">\.</span><span class="annot-desc">Escaped literal dot — separates domain from TLD</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z]{2,}</span><span class="annot-desc">Top-level domain — at least 2 letters (e.g. com, edu, in)</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">String end anchor</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {a–z, A–Z, 0–9, ., _, %, +, -, @}<br>
+              L₂ = { u@d.t | u ∈ [a-zA-Z0-9._%+\-]+, d ∈ [a-zA-Z0-9.\-]+, t ∈ [a-zA-Z]{2,} }<br>
+              Justification: Concatenation of regular languages (each part) under finite alphabet → regular.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD 3: FILE NAME -->
+      <div class="regex-card">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">3</div>
+          <div class="rc-name">File Name</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex</div>
+            <div class="regex-block">^[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Additional Safety Regex (no double extension)</div>
+            <div class="regex-block">^(?!.*\.\w+\.\w+)[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">Start anchor</span></div>
+              <div class="annot-line"><span class="annot-part">(?!.*\.\w+\.\w+)</span><span class="annot-desc"><strong>Negative lookahead</strong> — prevents double-extension attacks like "malware.pdf.exe"</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9_\-]{1,50}</span><span class="annot-desc">Base name — up to 50 safe characters, no spaces or special chars</span></div>
+              <div class="annot-line"><span class="annot-part">\.</span><span class="annot-desc">Literal dot (escaped)</span></div>
+              <div class="annot-line"><span class="annot-part">(jpg|jpeg|png|pdf|docx|txt)</span><span class="annot-desc">Alternation group — only whitelisted extensions accepted</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">End anchor</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {a–z, A–Z, 0–9, _, -, .}<br>
+              L₃ = { w.e | w ∈ [a-zA-Z0-9_\-]{1,50}, e ∈ {jpg, jpeg, png, pdf, docx, txt} }<br>
+              Justification: Finite set of extensions (regular) concatenated with a bounded regular base name → regular.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD 4: FILE TYPE -->
+      <div class="regex-card">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">4</div>
+          <div class="rc-name">File Extension (Blocklist with Negative Lookahead)</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex (Whitelist)</div>
+            <div class="regex-block">^\.(jpg|jpeg|png|pdf|docx|txt)$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Danger-block Regex (Negative Lookahead)</div>
+            <div class="regex-block">^(?!\.(exe|bat|sh|cmd|vbs|ps1|msi|dll|php|js)$)\.[a-zA-Z0-9]{2,10}$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">Start anchor</span></div>
+              <div class="annot-line"><span class="annot-part">(?!\.(exe|bat|sh|...)$)</span><span class="annot-desc"><strong>Negative lookahead</strong> — blocks dangerous executable extensions from the head</span></div>
+              <div class="annot-line"><span class="annot-part">\.</span><span class="annot-desc">Literal leading dot (extension prefix)</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9]{2,10}</span><span class="annot-desc">Extension body — 2 to 10 alphanumeric characters</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">End anchor</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {., a–z, A–Z, 0–9}<br>
+              L₄ = { .e | e ∈ {jpg, jpeg, png, pdf, docx, txt} } ⊂ Σ*<br>
+              Complement blocked: L_bad = { .exe, .bat, .sh, .cmd, .vbs, .ps1, .dll, .php, .js }<br>
+              Accepted language: L₄ = L_whitelist ∩ ¬L_bad → regular (closed under intersection &amp; complement).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD 5: FILE SIZE -->
+      <div class="regex-card">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">5</div>
+          <div class="rc-name">File Size (MB)</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex</div>
+            <div class="regex-block">^\d+(\.\d{1,2})?$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">Start anchor</span></div>
+              <div class="annot-line"><span class="annot-part">\d+</span><span class="annot-desc">One or more digits — integer part of the file size</span></div>
+              <div class="annot-line"><span class="annot-part">(\.\d{1,2})?</span><span class="annot-desc">Optional group — decimal point followed by exactly 1 or 2 digits</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">End anchor</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Range Constraint (JS logic)</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">0 &lt; value ≤ 100</span><span class="annot-desc">Programmatic range check after regex passes — ensures 0.01 MB to 100 MB</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {0–9, .}<br>
+              L₅ = { w ∈ Σ* | w = d+(.dd?)?, 0 &lt; parseFloat(w) ≤ 100 }<br>
+              Justification: Fixed structure of digits and optional decimal → DFA-recognisable → regular.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD 6: DESCRIPTION -->
+      <div class="regex-card">
+        <div class="rc-head" onclick="toggleCard(this)">
+          <div class="rc-num">6</div>
+          <div class="rc-name">Description</div>
+          <div class="rc-chevron">▼</div>
+        </div>
+        <div class="rc-body">
+          <div>
+            <div class="rc-section-label">Primary Regex</div>
+            <div class="regex-block">^(?!\s*$)[a-zA-Z0-9\s.,!?'\-]{10,300}$</div>
+          </div>
+          <div>
+            <div class="rc-section-label">Annotated Breakdown</div>
+            <div class="regex-annotated">
+              <div class="annot-line"><span class="annot-part">^</span><span class="annot-desc">Start anchor</span></div>
+              <div class="annot-line"><span class="annot-part">(?!\s*$)</span><span class="annot-desc"><strong>Negative lookahead</strong> — rejects strings that are only whitespace</span></div>
+              <div class="annot-line"><span class="annot-part">[a-zA-Z0-9\s.,!?'\-]</span><span class="annot-desc">Permitted characters: alphanumeric, space, and basic punctuation only</span></div>
+              <div class="annot-line"><span class="annot-part">{10,300}</span><span class="annot-desc">Quantifier — between 10 and 300 characters</span></div>
+              <div class="annot-line"><span class="annot-part">$</span><span class="annot-desc">End anchor</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="rc-section-label">Formal Language Definition</div>
+            <div class="formal-lang">
+              Σ = {a–z, A–Z, 0–9, space, ., ,, !, ?, ', -}<br>
+              L₆ = { w ∈ Σ* | 10 ≤ |w| ≤ 300, w ∉ whitespace-only }<br>
+              Justification: Finite-length constraint over finite alphabet → regular; lookahead is a syntactic shortcut for intersection with complement.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /regex-cards -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     §3 — DFA / NFA DIAGRAMS
+═══════════════════════════════════════════════════ -->
+<section id="dfa">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 3</span>
+      <div class="section-title-group">
+        <h2 class="section-title">DFA / NFA State Diagrams</h2>
+        <p class="section-desc">Formal automaton representations for two key fields. States, transitions, start (→) and accepting states (double circle) shown.</p>
+      </div>
+    </div>
+
+    <!-- DFA 1: FILE NAME -->
+    <div class="dfa-section">
+      <h3 class="dfa-title">DFA — File Name Validation</h3>
+      <p class="dfa-desc">
+        Pattern: <code style="font-family:var(--mono);font-size:12px;color:var(--cyan2);">^[a-zA-Z0-9_\-]{1,50}\.(jpg|png|pdf|docx|txt)$</code><br>
+        The DFA accepts strings of form <em>BaseName.Extension</em>. It transitions through five high-level states.
+      </p>
+      <div class="dfa-diagram">
+        <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg" style="min-width:600px;">
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 Z" fill="#a0a0c0"/>
+            </marker>
+            <marker id="arrg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 Z" fill="#2ed573"/>
+            </marker>
+            <marker id="arrr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 Z" fill="#ff4757"/>
+            </marker>
+          </defs>
+
+          <!-- Start indicator -->
+          <line x1="28" y1="100" x2="58" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="16" y="96" font-family="JetBrains Mono,monospace" font-size="11" fill="#a0a0c0">→</text>
+
+          <!-- q0: Start -->
+          <circle cx="88" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="88" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₀</text>
+          <text x="88" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">START</text>
+
+          <!-- q0 → q1 -->
+          <line x1="114" y1="100" x2="188" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="151" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">[a-z A-Z 0-9 _ -]</text>
+
+          <!-- q1: Valid base chars -->
+          <circle cx="218" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="218" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₁</text>
+          <text x="218" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">BASE</text>
+
+          <!-- q1 self-loop -->
+          <path d="M205,76 Q218,50 231,76" fill="none" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="218" y="55" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">[a-z A-Z 0-9 _ -]</text>
+
+          <!-- q1 → q2 -->
+          <line x1="244" y1="100" x2="338" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="291" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">'.'</text>
+
+          <!-- q2: Dot seen -->
+          <circle cx="368" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="368" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₂</text>
+          <text x="368" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">DOT</text>
+
+          <!-- q2 → q3 -->
+          <line x1="394" y1="100" x2="488" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="441" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">j|p|d|t</text>
+          <text x="441" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">(1st ext char)</text>
+
+          <!-- q3: Partial ext -->
+          <circle cx="518" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="518" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₃</text>
+          <text x="518" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">EXT₁</text>
+
+          <!-- q3 → q4 -->
+          <line x1="544" y1="100" x2="638" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="591" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">valid ext</text>
+          <text x="591" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">remaining</text>
+
+          <!-- q4: Full ext -->
+          <circle cx="668" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="668" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₄</text>
+          <text x="668" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">EXT₂</text>
+
+          <!-- q4 → q5 (accept) -->
+          <line x1="694" y1="100" x2="788" y2="100" stroke="#2ed573" stroke-width="1.5" marker-end="url(#arrg)"/>
+          <text x="741" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">$</text>
+
+          <!-- q5: Accept -->
+          <circle cx="818" cy="100" r="26" fill="rgba(46,213,115,0.08)" stroke="#2ed573" stroke-width="2"/>
+          <circle cx="818" cy="100" r="21" fill="none" stroke="#2ed573" stroke-width="1"/>
+          <text x="818" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#2ed573">q₅</text>
+          <text x="818" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#2ed573">ACCEPT</text>
+
+          <!-- Dead state -->
+          <circle cx="368" cy="165" r="18" fill="rgba(255,71,87,0.08)" stroke="#ff4757" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="368" y="170" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff4757">q_dead</text>
+          <!-- q2 → dead -->
+          <line x1="368" y1="126" x2="368" y2="147" stroke="#ff4757" stroke-width="1.5" marker-end="url(#arrr)"/>
+          <text x="385" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff4757">invalid char</text>
+        </svg>
+      </div>
+
+      <table class="transition-table" style="margin-top:20px;">
+        <thead>
+          <tr>
+            <th>State</th><th>Role</th><th>On [a-zA-Z0-9_-]</th><th>On '.'</th><th>On valid ext</th><th>On $</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="state-start">→ q₀</td><td>Start</td><td>q₁</td><td>q_dead</td><td>q_dead</td><td>—</td></tr>
+          <tr><td>q₁</td><td>Base name</td><td>q₁ (self)</td><td>q₂</td><td>q_dead</td><td>—</td></tr>
+          <tr><td>q₂</td><td>Dot seen</td><td>q_dead</td><td>q_dead</td><td>q₃</td><td>—</td></tr>
+          <tr><td>q₃</td><td>Ext (partial)</td><td>q₄</td><td>q_dead</td><td>—</td><td>—</td></tr>
+          <tr><td>q₄</td><td>Ext (full)</td><td>—</td><td>q_dead</td><td>—</td><td>q₅</td></tr>
+          <tr><td class="state-accept">q₅ ⊙</td><td>Accept</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>q_dead</td><td>Dead/Trap</td><td>q_dead</td><td>q_dead</td><td>q_dead</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DFA 2: EMAIL -->
+    <div class="dfa-section">
+      <h3 class="dfa-title">DFA — Email Address Validation</h3>
+      <p class="dfa-desc">
+        Pattern: <code style="font-family:var(--mono);font-size:12px;color:var(--cyan2);">^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$</code><br>
+        The DFA models the three-part structure: local-part → "@" → domain → "." → TLD.
+      </p>
+      <div class="dfa-diagram">
+        <svg viewBox="0 0 960 200" xmlns="http://www.w3.org/2000/svg" style="min-width:650px;">
+          <defs>
+            <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 Z" fill="#a0a0c0"/>
+            </marker>
+            <marker id="arrg2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 Z" fill="#2ed573"/>
+            </marker>
+          </defs>
+
+          <!-- Start arrow -->
+          <line x1="20" y1="100" x2="50" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+          <!-- q0 -->
+          <circle cx="80" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="80" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₀</text>
+          <text x="80" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">START</text>
+
+          <!-- q0 → q1 -->
+          <line x1="106" y1="100" x2="186" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="146" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">local char</text>
+
+          <!-- q1 -->
+          <circle cx="216" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="216" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₁</text>
+          <text x="216" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">LOCAL</text>
+          <!-- self loop -->
+          <path d="M203,76 Q216,50 229,76" fill="none" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="216" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">local+</text>
+
+          <!-- q1 → q2 -->
+          <line x1="242" y1="100" x2="326" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="284" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">'@'</text>
+
+          <!-- q2 -->
+          <circle cx="356" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="356" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₂</text>
+          <text x="356" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">AT</text>
+
+          <!-- q2 → q3 -->
+          <line x1="382" y1="100" x2="466" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="424" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">domain char</text>
+
+          <!-- q3 -->
+          <circle cx="496" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="496" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₃</text>
+          <text x="496" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">DOMAIN</text>
+          <!-- self loop -->
+          <path d="M483,76 Q496,50 509,76" fill="none" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="496" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">dom+</text>
+
+          <!-- q3 → q4 -->
+          <line x1="522" y1="100" x2="606" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="564" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">'.'</text>
+
+          <!-- q4 -->
+          <circle cx="636" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="636" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₄</text>
+          <text x="636" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">DOT</text>
+
+          <!-- q4 → q5 -->
+          <line x1="662" y1="100" x2="746" y2="100" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="704" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">TLD char</text>
+
+          <!-- q5 -->
+          <circle cx="776" cy="100" r="26" fill="#1a1a2e" stroke="#3a3a70" stroke-width="1.5"/>
+          <text x="776" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#a0a0c0">q₅</text>
+          <text x="776" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6060a0">TLD</text>
+          <!-- self loop -->
+          <path d="M763,76 Q776,50 789,76" fill="none" stroke="#a0a0c0" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="776" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">tld+</text>
+
+          <!-- q5 → q6 (accept) -->
+          <line x1="802" y1="100" x2="886" y2="100" stroke="#2ed573" stroke-width="1.5" marker-end="url(#arrg2)"/>
+          <text x="844" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e5ff">$</text>
+
+          <!-- q6 accept -->
+          <circle cx="916" cy="100" r="26" fill="rgba(46,213,115,0.08)" stroke="#2ed573" stroke-width="2"/>
+          <circle cx="916" cy="100" r="21" fill="none" stroke="#2ed573" stroke-width="1"/>
+          <text x="916" y="96" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#2ed573">q₆</text>
+          <text x="916" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#2ed573">ACCEPT</text>
+        </svg>
+      </div>
+
+      <table class="transition-table" style="margin-top:20px;">
+        <thead>
+          <tr><th>State</th><th>Role</th><th>On local char</th><th>On '@'</th><th>On domain char</th><th>On '.'</th><th>On TLD char</th><th>On $</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="state-start">→ q₀</td><td>Start</td><td>q₁</td><td>q_dead</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>q₁</td><td>Local part</td><td>q₁</td><td>q₂</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>q₂</td><td>@ seen</td><td>—</td><td>—</td><td>q₃</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>q₃</td><td>Domain</td><td>—</td><td>—</td><td>q₃</td><td>q₄</td><td>—</td><td>—</td></tr>
+          <tr><td>q₄</td><td>Dot seen</td><td>—</td><td>—</td><td>—</td><td>—</td><td>q₅</td><td>—</td></tr>
+          <tr><td>q₅</td><td>TLD</td><td>—</td><td>—</td><td>—</td><td>—</td><td>q₅</td><td>q₆</td></tr>
+          <tr><td class="state-accept">q₆ ⊙</td><td>Accept</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     §4 — TEST CASES
+═══════════════════════════════════════════════════ -->
+<section id="tests">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 4</span>
+      <div class="section-title-group">
+        <h2 class="section-title">Test Cases</h2>
+        <p class="section-desc">Comprehensive valid and invalid test inputs for each field, with the reason for acceptance or rejection.</p>
+      </div>
+    </div>
+
+    <!-- USERNAME -->
+    <div class="test-section">
+      <div class="test-section-title">Field 1 — Username</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">tushar_285</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Letters + underscore + digits; length 10 ✓</td></tr>
+          <tr><td class="test-input">Admin2024</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Starts with letter, mixed case, 9 chars ✓</td></tr>
+          <tr><td class="test-input">XYZ</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Minimum 3 letters, all uppercase ✓</td></tr>
+          <tr><td class="test-input">ab</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Only 2 chars — below minimum of 3</td></tr>
+          <tr><td class="test-input">123456</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Negative lookahead blocks all-digit strings</td></tr>
+          <tr><td class="test-input">user name!</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Space and '!' not in character class [a-zA-Z0-9_]</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="test-section">
+      <div class="test-section-title">Field 2 — Email Address</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">tushar@college.edu</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Standard email structure ✓</td></tr>
+          <tr><td class="test-input">user.name+tag@sub.domain.in</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Plus and dot in local, multi-level domain ✓</td></tr>
+          <tr><td class="test-input">test_2024@gmail.com</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Underscore in local part, known TLD ✓</td></tr>
+          <tr><td class="test-input">@nodomain.com</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Empty local part — requires [a-z...]+</td></tr>
+          <tr><td class="test-input">user@.nodot</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Domain starts with dot — fails [a-z...]+ before \.</td></tr>
+          <tr><td class="test-input">noatsign.com</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Missing '@' separator</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FILE NAME -->
+    <div class="test-section">
+      <div class="test-section-title">Field 3 — File Name</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">report_2024.pdf</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Safe base name, whitelisted .pdf extension ✓</td></tr>
+          <tr><td class="test-input">photo-001.jpg</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Hyphen allowed, .jpg extension ✓</td></tr>
+          <tr><td class="test-input">notes.txt</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Simple base name, .txt extension ✓</td></tr>
+          <tr><td class="test-input">malware.pdf.exe</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Double-extension attack — negative lookahead blocks .*\.\w+\.\w+</td></tr>
+          <tr><td class="test-input">file name.pdf</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Space not in [a-zA-Z0-9_\-]</td></tr>
+          <tr><td class="test-input">script.exe</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">.exe is not in the whitelisted extensions group</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FILE TYPE -->
+    <div class="test-section">
+      <div class="test-section-title">Field 4 — File Extension</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">.pdf</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">In whitelist, not blocked ✓</td></tr>
+          <tr><td class="test-input">.png</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">In whitelist, not blocked ✓</td></tr>
+          <tr><td class="test-input">.docx</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">In whitelist, not blocked ✓</td></tr>
+          <tr><td class="test-input">.exe</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Negative lookahead explicitly blocks .exe</td></tr>
+          <tr><td class="test-input">.sh</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Shell script — blocked by lookahead</td></tr>
+          <tr><td class="test-input">pdf</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Missing leading dot — fails \. literal match</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FILE SIZE -->
+    <div class="test-section">
+      <div class="test-section-title">Field 5 — File Size (MB)</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">4.75</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Positive decimal, 2 decimal places, in range ✓</td></tr>
+          <tr><td class="test-input">100</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Integer at max boundary ✓</td></tr>
+          <tr><td class="test-input">0.5</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Positive, 1 decimal place ✓</td></tr>
+          <tr><td class="test-input">0</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Zero — fails range constraint (must be &gt; 0)</td></tr>
+          <tr><td class="test-input">100.5</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Exceeds maximum 100 MB range constraint</td></tr>
+          <tr><td class="test-input">4.757</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">3 decimal places — fails \d{1,2} in regex</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="test-section">
+      <div class="test-section-title">Field 6 — Description</div>
+      <table class="test-table">
+        <thead><tr><th>Input</th><th>Result</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td class="test-input">Project report for TOC course, 2024.</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">All permitted chars, 37 chars, not whitespace-only ✓</td></tr>
+          <tr><td class="test-input">Image file from the annual survey data.</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Letters, spaces, standard punctuation ✓</td></tr>
+          <tr><td class="test-input">Financial Q3 report - confidential.</td><td><span class="badge-valid">VALID</span></td><td class="test-reason">Hyphen allowed in character class ✓</td></tr>
+          <tr><td class="test-input">Hi</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Only 2 chars — below 10 character minimum</td></tr>
+          <tr><td class="test-input">     </td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">Whitespace-only — blocked by negative lookahead (?!\s*$)</td></tr>
+          <tr><td class="test-input">Hack &lt;script&gt;alert(1)&lt;/script&gt;</td><td><span class="badge-invalid">INVALID</span></td><td class="test-reason">&lt; &gt; / characters not in allowed class — XSS blocked</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     §5 — CODE EXPLANATION
+═══════════════════════════════════════════════════ -->
+<section id="code">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 5</span>
+      <div class="section-title-group">
+        <h2 class="section-title">Code Explanation</h2>
+        <p class="section-desc">Modular JavaScript validation functions — each regex is commented to explain every component.</p>
+      </div>
+    </div>
+
+    <div class="code-block-wrapper">
+      <div class="code-header">
+        <span class="code-lang">JAVASCRIPT — validation.js</span>
+        <button class="code-copy" onclick="copyCode('codeBlock1')">Copy</button>
+      </div>
+      <pre id="codeBlock1"><span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 1 — Username Validator
+// Regex: ^(?![0-9]+$)[a-zA-Z0-9_]{3,20}$
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateUsername</span>(input) {
+  <span class="cmt">// Negative lookahead prevents all-digit usernames (e.g. "123456")</span>
+  <span class="cmt">// [a-zA-Z0-9_] allows letters, digits, underscores only</span>
+  <span class="cmt">// {3,20} enforces minimum 3 and maximum 20 characters</span>
+  <span class="kw">const</span> regex = <span class="rx">/^(?![0-9]+$)[a-zA-Z0-9_]{3,20}$/</span>;
+  <span class="kw">const</span> valid = regex.test(input.value.trim());
+  <span class="fn">setFeedback</span>(<span class="str">'username'</span>, valid,
+    valid ? <span class="str">'✓ Valid username'</span>
+          : <span class="str">'3–20 chars; letters/digits/underscore; not all-digits'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}
+
+<span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 2 — Email Validator
+// Regex: ^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateEmail</span>(input) {
+  <span class="cmt">// [a-zA-Z0-9._%+\-]+ → local part (one or more allowed chars)</span>
+  <span class="cmt">// @ → mandatory @ separator</span>
+  <span class="cmt">// [a-zA-Z0-9.\-]+ → domain part</span>
+  <span class="cmt">// \. → escaped dot (domain separator)</span>
+  <span class="cmt">// [a-zA-Z]{2,} → TLD must be at least 2 alphabetic chars</span>
+  <span class="kw">const</span> regex = <span class="rx">/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/</span>;
+  <span class="kw">const</span> valid = regex.test(input.value.trim());
+  <span class="fn">setFeedback</span>(<span class="str">'email'</span>, valid,
+    valid ? <span class="str">'✓ Valid email address'</span>
+          : <span class="str">'Format: local@domain.tld (e.g. user@college.edu)'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}
+
+<span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 3 — File Name Validator
+// Regex: ^(?!.*\.\w+\.\w+)[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateFileName</span>(input) {
+  <span class="cmt">// (?!.*\.\w+\.\w+) — negative lookahead blocks double-extension attacks</span>
+  <span class="cmt">// [a-zA-Z0-9_\-]{1,50} — safe base name (no spaces/special chars)</span>
+  <span class="cmt">// \. — literal dot separator</span>
+  <span class="cmt">// (jpg|jpeg|png|pdf|docx|txt) — whitelist of allowed extensions</span>
+  <span class="kw">const</span> regex = <span class="rx">/^(?!.*\.\w+\.\w+)[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$/i</span>;
+  <span class="kw">const</span> valid = regex.test(input.value.trim());
+  <span class="fn">setFeedback</span>(<span class="str">'filename'</span>, valid,
+    valid ? <span class="str">'✓ Valid file name'</span>
+          : <span class="str">'Use safe chars, allowed extensions: jpg/jpeg/png/pdf/docx/txt'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}
+
+<span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 4 — File Extension Validator
+// Regex: ^\.(jpg|jpeg|png|pdf|docx|txt)$
+// Block: (?!\.(exe|bat|sh|cmd|vbs|ps1|dll|php|js)$)
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateFileType</span>(input) {
+  <span class="kw">const</span> val = input.value.trim().toLowerCase();
+  <span class="cmt">// Whitelist: only these extensions permitted</span>
+  <span class="kw">const</span> whitelist = <span class="rx">/^\.(jpg|jpeg|png|pdf|docx|txt)$/</span>;
+  <span class="cmt">// Blocklist: dangerous extensions explicitly rejected</span>
+  <span class="kw">const</span> blocklist = <span class="rx">/^\.(exe|bat|sh|cmd|vbs|ps1|msi|dll|php|js)$/</span>;
+  <span class="kw">const</span> valid = whitelist.test(val) &amp;&amp; !blocklist.test(val);
+  <span class="fn">setFeedback</span>(<span class="str">'filetype'</span>, valid,
+    valid ? <span class="str">'✓ Permitted extension'</span>
+          : <span class="str">'Allowed: .jpg .jpeg .png .pdf .docx .txt | Blocked: .exe .bat .sh etc.'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}
+
+<span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 5 — File Size Validator
+// Regex: ^\d+(\.\d{1,2})?$  +  Range: 0 < n ≤ 100
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateFileSize</span>(input) {
+  <span class="kw">const</span> val = input.value.trim();
+  <span class="cmt">// \d+ — one or more digits (integer part)</span>
+  <span class="cmt">// (\.\d{1,2})? — optional decimal with 1 or 2 digits</span>
+  <span class="kw">const</span> regex = <span class="rx">/^\d+(\.\d{1,2})?$/</span>;
+  <span class="kw">const</span> num = <span class="fn">parseFloat</span>(val);
+  <span class="kw">const</span> valid = regex.test(val) &amp;&amp; num &gt; <span class="num">0</span> &amp;&amp; num &lt;= <span class="num">100</span>;
+  <span class="fn">setFeedback</span>(<span class="str">'filesize'</span>, valid,
+    valid ? <span class="str">`✓ Valid size (${num} MB)`</span>
+          : <span class="str">'Enter a number between 0.01 and 100, up to 2 decimal places'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}
+
+<span class="cmt">// ═══════════════════════════════════════════════════
+// FIELD 6 — Description Validator
+// Regex: ^(?!\s*$)[a-zA-Z0-9\s.,!?'\-]{10,300}$
+// ═══════════════════════════════════════════════════</span>
+<span class="kw">function</span> <span class="fn">validateDescription</span>(input) {
+  <span class="cmt">// (?!\s*$) — negative lookahead rejects whitespace-only strings</span>
+  <span class="cmt">// [a-zA-Z0-9\s.,!?'\-] — safe chars; no HTML/script injection chars</span>
+  <span class="cmt">// {10,300} — minimum 10, maximum 300 characters</span>
+  <span class="kw">const</span> regex = <span class="rx">/^(?!\s*$)[a-zA-Z0-9\s.,!?'\-]{10,300}$/</span>;
+  <span class="kw">const</span> valid = regex.test(input.value);
+  <span class="kw">const</span> len = input.value.length;
+  <span class="fn">setFeedback</span>(<span class="str">'description'</span>, valid,
+    valid ? <span class="str">`✓ Description ok (${len}/300 chars)`</span>
+          : len &lt; <span class="num">10</span>
+            ? <span class="str">`Too short (${len}/10 minimum chars)`</span>
+            : len &gt; <span class="num">300</span>
+              ? <span class="str">`Too long (${len}/300 max chars)`</span>
+              : <span class="str">'Only letters, digits, spaces and basic punctuation allowed'</span>);
+  <span class="fn">updateSummary</span>();
+  <span class="kw">return</span> valid;
+}</pre>
+    </div>
+
+    <div class="code-block-wrapper">
+      <div class="code-header">
+        <span class="code-lang">JAVASCRIPT — helpers &amp; UI utilities</span>
+        <button class="code-copy" onclick="copyCode('codeBlock2')">Copy</button>
+      </div>
+      <pre id="codeBlock2"><span class="cmt">// ─── Helper: set field feedback (valid/invalid state) ─────────</span>
+<span class="kw">function</span> <span class="fn">setFeedback</span>(field, isValid, message) {
+  <span class="kw">const</span> input = document.<span class="fn">getElementById</span>(field);
+  <span class="kw">const</span> fb    = document.<span class="fn">getElementById</span>(<span class="str">`fb-${field}`</span>);
+  input.classList.<span class="fn">toggle</span>(<span class="str">'valid'</span>, isValid);
+  input.classList.<span class="fn">toggle</span>(<span class="str">'invalid'</span>, !isValid);
+  fb.className = <span class="str">`field-feedback ${isValid ? 'ok' : 'err'}`</span>;
+  fb.textContent = message;
+}
+
+<span class="cmt">// ─── Helper: update validation summary counter ────────────────</span>
+<span class="kw">function</span> <span class="fn">updateSummary</span>() {
+  <span class="kw">const</span> fields = [<span class="str">'username'</span>,<span class="str">'email'</span>,<span class="str">'filename'</span>,<span class="str">'filetype'</span>,<span class="str">'filesize'</span>,<span class="str">'description'</span>];
+  <span class="kw">const</span> count = fields.<span class="fn">filter</span>(f =&gt; document.<span class="fn">getElementById</span>(f)
+    ?.classList.contains(<span class="str">'valid'</span>)).length;
+  document.<span class="fn">getElementById</span>(<span class="str">'validCount'</span>).textContent = count;
+}
+
+<span class="cmt">// ─── Form submit handler ───────────────────────────────────────</span>
+<span class="kw">function</span> <span class="fn">handleSubmit</span>(e) {
+  e.<span class="fn">preventDefault</span>();
+  <span class="kw">const</span> validations = [
+    <span class="fn">validateUsername</span>(document.<span class="fn">getElementById</span>(<span class="str">'username'</span>)),
+    <span class="fn">validateEmail</span>(document.<span class="fn">getElementById</span>(<span class="str">'email'</span>)),
+    <span class="fn">validateFileName</span>(document.<span class="fn">getElementById</span>(<span class="str">'filename'</span>)),
+    <span class="fn">validateFileType</span>(document.<span class="fn">getElementById</span>(<span class="str">'filetype'</span>)),
+    <span class="fn">validateFileSize</span>(document.<span class="fn">getElementById</span>(<span class="str">'filesize'</span>)),
+    <span class="fn">validateDescription</span>(document.<span class="fn">getElementById</span>(<span class="str">'description'</span>)),
+  ];
+  <span class="kw">const</span> allValid = validations.<span class="fn">every</span>(v =&gt; v === <span class="kw">true</span>);
+  <span class="fn">showToast</span>(allValid
+    ? <span class="str">'✓ All fields valid — file upload accepted!'</span>
+    : <span class="str">'✗ Fix errors before submitting'</span>, allValid);
+  <span class="kw">return false</span>;
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     §6 — THEORY JUSTIFICATION
+═══════════════════════════════════════════════════ -->
+<section id="theory">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">§ 6</span>
+      <div class="section-title-group">
+        <h2 class="section-title">Theory Justification</h2>
+        <p class="section-desc">Why each language is regular, and how lookaheads fit within the Chomsky hierarchy.</p>
+      </div>
+    </div>
+
+    <div class="theory-grid">
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">Σ</div>Regular Languages</div>
+        <div class="theory-body">
+          A language L over alphabet Σ is <strong>regular</strong> if and only if there exists a DFA (or equivalently, NFA or regex) that recognises exactly L. All six fields in this project have:
+          <br><br>
+          • A <strong>finite alphabet</strong> Σ (alphanumeric + punctuation subsets)<br>
+          • <strong>Length bounds</strong> expressible as counting states in a DFA<br>
+          • Structure recognisable by a <strong>finite automaton</strong>
+          <br><br>
+          By Kleene's Theorem, all such languages are regular.
+        </div>
+      </div>
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">→</div>DFA vs NFA Equivalence</div>
+        <div class="theory-body">
+          Every NFA can be converted to an equivalent DFA via the <strong>Subset Construction</strong> algorithm (powerset construction). While the DFA may have up to 2ⁿ states for an n-state NFA, the recognised language is identical.<br><br>
+          The email DFA shown in §3 was derived mentally from the NFA of alternation groups in the regex, then determinised. The automaton is a valid recogniser of L₂.
+        </div>
+      </div>
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">(?!)</div>Lookaheads &amp; Regularity</div>
+        <div class="theory-body">
+          JavaScript regex lookaheads <span class="highlight">(?!...)</span> are <strong>zero-width assertions</strong> — they do not consume input. Formally, each lookahead computes an intersection or complement:<br><br>
+          <code style="font-family:var(--mono);font-size:12px;color:var(--cyan2);">L ∩ ¬L_bad</code><br><br>
+          Since regular languages are <strong>closed under intersection and complement</strong>, the result is still regular. Lookaheads are syntactic sugar for these closure operations.
+        </div>
+      </div>
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">∪</div>Closure Properties Used</div>
+        <div class="theory-body">
+          This project exploits that regular languages are closed under:<br><br>
+          • <strong>Concatenation</strong> — local@domain.tld = L₁ · {$@$} · L₂ · {$.} · L₃<br>
+          • <strong>Union</strong> — (jpg | png | pdf | docx | txt)<br>
+          • <strong>Kleene Star</strong> — [a-zA-Z0-9_]* for repeated characters<br>
+          • <strong>Complement</strong> — blocking .exe via ¬L_exe<br>
+          • <strong>Intersection</strong> — L_whitelist ∩ ¬L_blocklist
+        </div>
+      </div>
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">∉</div>Why Not Context-Free?</div>
+        <div class="theory-body">
+          None of the validated languages require <strong>balanced nesting</strong> or <strong>counting dependencies</strong> beyond finite bounds. The Pumping Lemma for regular languages is not violated. In particular:<br><br>
+          • Length bounds {3,20} can be modelled with finitely many states<br>
+          • The extension whitelist is a <strong>finite set</strong> (trivially regular)<br>
+          Therefore, a PDA is unnecessary — a DFA suffices.
+        </div>
+      </div>
+
+      <div class="theory-card">
+        <div class="theory-card-title"><div class="icon">🔒</div>Security via Formal Methods</div>
+        <div class="theory-body">
+          Regex-based validation provides provable security guarantees when the language is correctly defined:<br><br>
+          • <strong>Path Traversal</strong> blocked — no / or .. in file names<br>
+          • <strong>XSS</strong> blocked — &lt; &gt; &amp; " not in L₆ alphabet<br>
+          • <strong>Double-extension attacks</strong> — blocked by lookahead in L₃<br>
+          • <strong>Executable uploads</strong> — L₄ complement blocks .exe .sh etc.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="theorem-box">
+      <div class="theorem-title">▸ Kleene's Theorem (Formal Statement)</div>
+      <div class="theorem-body">
+        "A language L is regular if and only if it is described by a regular expression." — S. C. Kleene, 1956.<br><br>
+        Equivalently: L is regular ↔ ∃ DFA M such that L(M) = L ↔ ∃ NFA N such that L(N) = L ↔ ∃ regex r such that L(r) = L.<br><br>
+        All six validation regexes in this project correspond to regular expressions over finite alphabets, and therefore describe regular languages recognised by DFAs with finitely many states. This validates the entire project's theoretical foundation.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>Theory of Computation — Mini Project</div>
+    <div><span>Tushar Kaldate</span> · PRN <span>202401040191</span> · Roll <span>285</span></div>
+    <div style="margin-top:6px;font-size:11px;color:var(--text3);">
+      Secure File Upload System · Regex-Based Web Form Validation · HTML5 / CSS3 / JavaScript
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     TOAST
+═══════════════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+<script>
+/* ── Validation Functions ─────────────────────────────────── */
+
+function validateUsername(input) {
+  // Negative lookahead: rejects all-digit usernames
+  // Character class: letters, digits, underscore only
+  // Quantifier: {3,20} — 3 to 20 characters
+  const regex = /^(?![0-9]+$)[a-zA-Z0-9_]{3,20}$/;
+  const valid = regex.test(input.value.trim());
+  setFeedback('username', valid,
+    valid ? '✓ Valid username'
+          : '3–20 chars; letters/digits/underscore; not all-digits');
+  updateSummary();
+  return valid;
+}
+
+function validateEmail(input) {
+  // Local: [a-zA-Z0-9._%+\-]+ — one or more allowed chars before @
+  // @ — mandatory separator
+  // Domain: [a-zA-Z0-9.\-]+ — letters, digits, dots, hyphens
+  // \. — escaped literal dot
+  // TLD: [a-zA-Z]{2,} — at least 2 alphabetic chars (com, edu, in)
+  const regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+  const valid = regex.test(input.value.trim());
+  setFeedback('email', valid,
+    valid ? '✓ Valid email address'
+          : 'Format: user@domain.tld (e.g. tushar@college.edu)');
+  updateSummary();
+  return valid;
+}
+
+function validateFileName(input) {
+  // (?!.*\.\w+\.\w+) — negative lookahead: blocks double-extension attacks
+  // [a-zA-Z0-9_\-]{1,50} — safe base name, no spaces or specials
+  // \. — literal dot (escaped)
+  // (jpg|jpeg|png|pdf|docx|txt) — allowed extensions only
+  const regex = /^(?!.*\.\w+\.\w+)[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$/i;
+  const valid = regex.test(input.value.trim());
+  setFeedback('filename', valid,
+    valid ? '✓ Valid file name'
+          : 'Use safe chars + allowed extension (jpg/jpeg/png/pdf/docx/txt)');
+  updateSummary();
+  return valid;
+}
+
+function validateFileType(input) {
+  const val = input.value.trim().toLowerCase();
+  // Whitelist regex — only these extensions accepted
+  const whitelist = /^\.(jpg|jpeg|png|pdf|docx|txt)$/;
+  // Blocklist regex — dangerous extensions explicitly rejected
+  const blocklist = /^\.(exe|bat|sh|cmd|vbs|ps1|msi|dll|php|js)$/;
+  const valid = whitelist.test(val) && !blocklist.test(val);
+  setFeedback('filetype', valid,
+    valid ? '✓ Permitted extension'
+          : 'Allowed: .jpg .jpeg .png .pdf .docx .txt | Blocked: .exe .bat .sh etc.');
+  updateSummary();
+  return valid;
+}
+
+function validateFileSize(input) {
+  const val = input.value.trim();
+  // \d+ — integer part (one or more digits)
+  // (\.\d{1,2})? — optional decimal (up to 2 places)
+  // Range constraint: 0 < n ≤ 100 (applied in JS after regex pass)
+  const regex = /^\d+(\.\d{1,2})?$/;
+  const num = parseFloat(val);
+  const valid = regex.test(val) && num > 0 && num <= 100;
+  setFeedback('filesize', valid,
+    valid ? `✓ Valid size (${num} MB)`
+          : 'Enter a number between 0.01 and 100 (up to 2 decimal places)');
+  updateSummary();
+  return valid;
+}
+
+function validateDescription(input) {
+  // (?!\s*$) — negative lookahead: rejects whitespace-only input
+  // [a-zA-Z0-9\s.,!?'\-] — safe chars; HTML injection chars blocked
+  // {10,300} — minimum 10, maximum 300 characters
+  const regex = /^(?!\s*$)[a-zA-Z0-9\s.,!?'\-]{10,300}$/;
+  const valid = regex.test(input.value);
+  const len = input.value.length;
+  let msg;
+  if (valid) msg = `✓ Description ok (${len}/300 chars)`;
+  else if (len < 10)  msg = `Too short — ${len} of 10 minimum chars entered`;
+  else if (len > 300) msg = `Too long — ${len} chars (max 300)`;
+  else                msg = 'Only letters, digits, spaces, and basic punctuation allowed';
+  setFeedback('description', valid, msg);
+  updateSummary();
+  return valid;
+}
+
+function handleFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const allowed = /\.(jpg|jpeg|png|pdf|docx|txt)$/i;
+  const blocked  = /\.(exe|bat|sh|cmd|vbs|ps1|msi|dll|php|js)$/i;
+  const sizeMB = file.size / (1024 * 1024);
+  const drop = document.getElementById('fileDrop');
+  const fb   = document.getElementById('fb-fileupload');
+
+  if (blocked.test(file.name)) {
+    fb.className = 'field-feedback err';
+    fb.textContent = '✗ Dangerous file type blocked';
+    drop.style.borderColor = 'var(--red)';
+  } else if (!allowed.test(file.name)) {
+    fb.className = 'field-feedback err';
+    fb.textContent = '✗ File extension not permitted';
+    drop.style.borderColor = 'var(--red)';
+  } else if (sizeMB > 100) {
+    fb.className = 'field-feedback err';
+    fb.textContent = `✗ File too large (${sizeMB.toFixed(2)} MB > 100 MB)`;
+    drop.style.borderColor = 'var(--red)';
+  } else {
+    fb.className = 'field-feedback ok';
+    fb.textContent = `✓ ${file.name} (${sizeMB.toFixed(2)} MB) — accepted`;
+    drop.style.borderColor = 'var(--green)';
+    // Auto-fill related fields
+    const fnInput = document.getElementById('filename');
+    const ftInput = document.getElementById('filetype');
+    const fsInput = document.getElementById('filesize');
+    if (fnInput && !fnInput.value) {
+      fnInput.value = file.name;
+      validateFileName(fnInput);
+    }
+    if (ftInput && !ftInput.value) {
+      const ext = file.name.match(/\.[^.]+$/);
+      if (ext) { ftInput.value = ext[0].toLowerCase(); validateFileType(ftInput); }
+    }
+    if (fsInput && !fsInput.value) {
+      fsInput.value = sizeMB.toFixed(2);
+      validateFileSize(fsInput);
+    }
+  }
+}
+
+/* ── Helpers ──────────────────────────────────────────────── */
+
+function setFeedback(field, isValid, message) {
+  const input = document.getElementById(field);
+  const fb    = document.getElementById(`fb-${field}`);
+  if (!input || !fb) return;
+  input.classList.toggle('valid',   isValid);
+  input.classList.toggle('invalid', !isValid);
+  fb.className  = `field-feedback ${isValid ? 'ok' : 'err'}`;
+  fb.textContent = message;
+}
+
+function updateSummary() {
+  const fields = ['username','email','filename','filetype','filesize','description'];
+  const count = fields.filter(f => document.getElementById(f)?.classList.contains('valid')).length;
+  document.getElementById('validCount').textContent = count;
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const results = [
+    validateUsername  (document.getElementById('username')),
+    validateEmail     (document.getElementById('email')),
+    validateFileName  (document.getElementById('filename')),
+    validateFileType  (document.getElementById('filetype')),
+    validateFileSize  (document.getElementById('filesize')),
+    validateDescription(document.getElementById('description')),
+  ];
+  const allValid = results.every(v => v === true);
+  showToast(
+    allValid ? '✓ All 6 fields valid — file upload request accepted!'
+             : `✗ ${results.filter(v => !v).length} field(s) still invalid. Fix errors above.`,
+    allValid
+  );
+  return false;
+}
+
+function showToast(msg, success) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `show ${success ? 'success' : 'error'}`;
+  setTimeout(() => { t.className = t.className.replace('show','').trim(); }, 4000);
+}
+
+function copyCode(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    showToast('✓ Code copied to clipboard', true);
+  });
+}
+
+/* ── Regex card accordion ─────────────────────────────────── */
+function toggleCard(head) {
+  const card = head.closest('.regex-card');
+  card.classList.toggle('open');
+}
+
+/* ── Inline Regex Tester ──────────────────────────────────── */
+const PATTERNS = {
+  username:    /^(?![0-9]+$)[a-zA-Z0-9_]{3,20}$/,
+  email:       /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
+  filename:    /^(?!.*\.\w+\.\w+)[a-zA-Z0-9_\-]{1,50}\.(jpg|jpeg|png|pdf|docx|txt)$/i,
+  filetype:    /^\.(jpg|jpeg|png|pdf|docx|txt)$/,
+  filesize:    /^\d+(\.\d{1,2})?$/,
+  description: /^(?!\s*$)[a-zA-Z0-9\s.,!?'\-]{10,300}$/
+};
+
+function runTester() {
+  const key  = document.getElementById('testerPattern').value;
+  const val  = document.getElementById('testerInput').value;
+  const res  = document.getElementById('testerResult');
+  if (!key || !val) { res.className = 'tester-result idle'; res.textContent = '—'; return; }
+  let match = PATTERNS[key].test(val);
+  // Extra range check for filesize
+  if (key === 'filesize') {
+    const n = parseFloat(val);
+    match = match && n > 0 && n <= 100;
+  }
+  res.className = `tester-result ${match ? 'match' : 'nomatch'}`;
+  res.textContent = match ? '✓ MATCH' : '✗ NO MATCH';
+}
+
+/* ── File drag-over effect ────────────────────────────────── */
+const drop = document.getElementById('fileDrop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+drop.addEventListener('dragleave', ()=> drop.classList.remove('drag'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('drag'); });
+</script>
+<!-- <script src="validation.js"></script> -->
+</body>
+</html>
